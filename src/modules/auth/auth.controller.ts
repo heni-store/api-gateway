@@ -22,7 +22,7 @@ import {
 } from '../../shared/constants';
 import { generateCsrfToken } from '../../shared/utils';
 import { CsrfGuard } from '../../shared/guards';
-import type { AuthRequest } from './types/auth-request.types';
+import type { AuthRequest } from './types';
 import type { EnvConfig } from '../../config/env.config';
 
 @Controller('auth')

@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { UserService } from '../users/user.service';
+import { UsersService } from '../users/user.service';
 import { TokenService } from './tokens/token.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -15,13 +15,13 @@ import type { EnvConfig } from '../../config/env.config';
 export class AuthService {
   constructor(
     private jwt: JwtService,
-    private readonly userService: UserService,
+    private readonly usersService: UsersService,
     private readonly tokenService: TokenService,
     private readonly configService: ConfigService<EnvConfig>,
   ) {}
 
   async register(email: string, password: string): Promise<void> {
-    const existing = await this.userService.findByEmail(email);
+    const existing = await this.usersService.findByEmail(email);
 
     if (existing) {
       throw new ConflictException('Email already in user');
@@ -29,11 +29,11 @@ export class AuthService {
 
     const passwordHash = await bcrypt.hash(password, 10);
 
-    await this.userService.create(email, passwordHash);
+    await this.usersService.create(email, passwordHash);
   }
 
   async login(email: string, password: string) {
-    const user = await this.userService.findByEmail(email);
+    const user = await this.usersService.findByEmail(email);
 
     if (!user) {
       throw new UnauthorizedException('invalid creditionals');
