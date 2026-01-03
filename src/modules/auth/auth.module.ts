@@ -7,7 +7,7 @@ import { JwtStrategy } from './jwt/jwt.strategy';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module';
-import type { EnvConfig } from '../../config/env.config';
+import type { EnvConfig } from '@config/env.config';
 
 @Module({
   imports: [

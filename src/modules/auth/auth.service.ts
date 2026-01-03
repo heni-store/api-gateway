@@ -9,7 +9,7 @@ import { TokenService } from './tokens/token.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import type { JwtPayload } from './tokens/token.types';
-import type { EnvConfig } from '../../config/env.config';
+import type { EnvConfig } from '@config/env.config';
 
 @Injectable()
 export class AuthService {

@@ -4,7 +4,7 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
-import type { AuthRequest } from '../../modules/auth/types';
+import type { AuthRequest } from '@modules/auth/types';
 import { CSRF_HEADER } from '../constants';
 
 @Injectable()

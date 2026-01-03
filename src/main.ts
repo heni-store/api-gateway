@@ -1,10 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
+import { envConfig } from '@config/env.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  const config = envConfig();
+  const logger = new Logger();
 
   app.enableCors({
     origin: 'http://localhost:5173',
@@ -22,6 +26,8 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
 
-  await app.listen(3000);
+  await app.listen(config.PORT);
+
+  logger.log(`🔥 Server listening port:${config.PORT}`);
 }
 void bootstrap();

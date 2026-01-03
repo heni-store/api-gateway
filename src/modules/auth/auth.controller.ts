@@ -19,11 +19,11 @@ import {
   ACCESS_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
   CSRF_COOKIE,
-} from '../../shared/constants';
-import { generateCsrfToken } from '../../shared/utils';
-import { CsrfGuard } from '../../shared/guards';
+} from '@shared/constants';
+import { generateCsrfToken } from '@shared/utils';
+import { CsrfGuard } from '@shared/guards';
 import type { AuthRequest } from './types';
-import type { EnvConfig } from '../../config/env.config';
+import type { EnvConfig } from '@config/env.config';
 
 @Controller('auth')
 export class AuthController {
