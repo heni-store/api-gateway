@@ -7,10 +7,72 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
-  id            String   @id @default(uuid())
-  email         String   @unique
-  passwordHash  String
-  emailVerified Boolean  @default(false)
-  createdAt     DateTime @default(now())
+model Problem {
+  id           String               @id @default(uuid())
+  slug         String               @unique
+  difficulty   Difficulty
+  isPublished  Boolean              @default(true)
+  translations ProblemTranslation[]
+  testCases    TestCase[]
+  submissions  Submission[]
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model ProblemTranslation {
+  id          String   @id @default(uuid())
+  problemId   String
+  locale      Locale
+  title       String
+  description String
+  examples    Json
+  constraints Json
+  starterCode Json
+  tags        String[]
+
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@unique([problemId, locale])
+}
+
+enum Locale {
+  RU
+  EN
+}
+
+model TestCase {
+  id        String  @id @default(uuid())
+  problemId String
+  input     String
+  output    String
+  isHidden  Boolean @default(true)
+
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+}
+
+model Submission {
+  id        String           @id @default(uuid())
+  problemId String
+  language  String
+  code      String
+  status    SubmissionStatus
+  result    Json?
+  createdAt DateTime         @default(now())
+
+  problem Problem @relation(fields: [problemId], references: [id])
+}
+
+enum SubmissionStatus {
+  PENDING
+  RUNNING
+  ACCEPTED
+  WRONG_ANSWER
+  RUNTIME_ERROR
+  TIME_LIMIT
 }

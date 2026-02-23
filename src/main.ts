@@ -11,20 +11,20 @@ async function bootstrap() {
   const logger = new Logger();
 
   app.enableCors({
-    origin: 'http://localhost:5173',
-    credentials: true,
+    origin: config.CORS.ORIGIN,
+    credentials: config.CORS.CREDENTIALS,
   });
 
   app.use(cookieParser());
 
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
+      whitelist: config.PIPE_OPTIONS.WHITE_LIST,
+      forbidNonWhitelisted: config.PIPE_OPTIONS.FORBID_NON_WHITE_LISTED,
     }),
   );
 
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix(config.SERVICE_GLOBAL_PREFIX);
 
   await app.listen(config.PORT);
 
