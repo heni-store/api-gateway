@@ -26,19 +26,45 @@ services:
     container_name: algomonkey-backend-dev
     restart: unless-stopped
     ports:
-      - '${PORT}:4000'
+      - '${PORT}:${PORT}'
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      REDIS_URL: ${REDIS_URL}
+      RMQ_URL: ${RMQ_URL}
       PORT: ${PORT}
       JWT_SECRET: ${JWT_SECRET}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      SERVICE_GLOBAL_PREFIX: ${SERVICE_GLOBAL_PREFIX}
+      SERVICE_PIPE_WHITE_LIST: ${SERVICE_PIPE_WHITE_LIST}
+      SERVICE_PIPE_FORBID_NON_WHITE_LISTED: ${SERVICE_PIPE_FORBID_NON_WHITE_LISTED}
+      CORS_ORIGIN: ${CORS_ORIGIN}
+      CORS_CREDENTIALS: ${CORS_CREDENTIALS}
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
     volumes:
       - ./prisma:/app/prisma
       - ./:/app
     command: sh -c "npx prisma migrate deploy && npx prisma db seed && npm run start:dev"
+
+  redis:
+    image: redis:7-alpine
+    container_name: algomonkey-redis-postgres_data_dev
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: algomonkey-rmq-dev
+    restart: unless-stopped
+    ports:
+      - '5672:5672'
+      - '15672:15672'
 
 volumes:
   postgres_data_dev:

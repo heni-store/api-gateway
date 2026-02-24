@@ -5,6 +5,7 @@ import { PrismaModule } from '@modules/prisma/prisma.module';
 
 import { ProblemsModule } from './modules/problems/problems.module';
 import { CommonModule } from './common/common.module';
+import { SubmissionModule } from './modules/submission/submission.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { CommonModule } from './common/common.module';
     PrismaModule,
 
     CommonModule,
+    SubmissionModule,
 
     ProblemsModule,
   ],

@@ -12,6 +12,10 @@ export interface EnvConfig {
     WHITE_LIST: boolean;
     FORBID_NON_WHITE_LISTED: boolean;
   };
+  REDIS: {
+    URL: string;
+  };
+  RMQ_URl: string;
 }
 
 export const envConfig = (): EnvConfig => ({
@@ -30,4 +34,8 @@ export const envConfig = (): EnvConfig => ({
       process.env.SERVICE_PIPE_FORBID_NON_WHITE_LISTED,
     ),
   },
+  REDIS: {
+    URL: process.env.REDIS_URL!,
+  },
+  RMQ_URl: process.env.RMQ_URL!,
 });
