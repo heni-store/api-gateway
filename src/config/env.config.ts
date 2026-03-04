@@ -15,7 +15,7 @@ export interface EnvConfig {
   REDIS: {
     URL: string;
   };
-  RMQ_URl: string;
+  RMQ_URL: string;
 }
 
 export const envConfig = (): EnvConfig => ({
@@ -37,5 +37,5 @@ export const envConfig = (): EnvConfig => ({
   REDIS: {
     URL: process.env.REDIS_URL!,
   },
-  RMQ_URl: process.env.RMQ_URL!,
+  RMQ_URL: process.env.RMQ_URL!,
 });

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
 import { envConfig } from '@app/config/env.config';
-import { SubmissionFinishedEvent } from '@app/libs/contracts/indext';
+import { SubmissionFinishedEvent } from '@app/libs/contracts';
 
 @Injectable()
 export class SubmissionRepository {

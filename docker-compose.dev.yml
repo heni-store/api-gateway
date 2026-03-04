@@ -19,6 +19,9 @@ services:
       timeout: 5s
       retries: 5
 
+    networks:
+      - shared-network
+
   app:
     build:
       context: .
@@ -50,6 +53,8 @@ services:
       - ./prisma:/app/prisma
       - ./:/app
     command: sh -c "npx prisma migrate deploy && npx prisma db seed && npm run start:dev"
+    networks:
+      - shared-network
 
   redis:
     image: redis:7-alpine
@@ -57,6 +62,8 @@ services:
     restart: unless-stopped
     ports:
       - '6379:6379'
+    networks:
+      - shared-network
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -65,6 +72,13 @@ services:
     ports:
       - '5672:5672'
       - '15672:15672'
+    networks:
+      - shared-network
 
 volumes:
   postgres_data_dev:
+
+networks:
+  shared-network:
+    external: true
+    name: algomonkey-dev-net

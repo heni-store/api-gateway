@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
 import { envConfig } from '@config/env.config';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -26,6 +27,17 @@ async function bootstrap() {
 
   app.setGlobalPrefix(config.SERVICE_GLOBAL_PREFIX);
 
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: [config.RMQ_URL],
+      queue: 'submission.finished',
+      queueOptions: { durable: true },
+      noAck: false,
+    },
+  });
+
+  await app.startAllMicroservices();
   await app.listen(config.PORT);
 
   logger.log(`🔥 Server listening port:${config.PORT}`);

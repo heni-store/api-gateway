@@ -1,18 +1,52 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { SubmissionRepository } from './submission.repository';
+import { Injectable } from '@nestjs/common';
 import {
-  SubmissionCreatedEvent,
-  SupportedLanguage,
-} from '@app/libs/contracts/indext';
+  ClientProxy,
+  ClientProxyFactory,
+  Transport,
+} from '@nestjs/microservices';
+import { SubmissionRepository } from './submission.repository';
+import { SubmissionCreatedEvent, SupportedLanguage } from '@app/libs/contracts';
 import { randomUUID } from 'crypto';
+import { envConfig } from '@app/config/env.config';
 
 @Injectable()
 export class SubmissionService {
-  constructor(
-    @Inject('RMQ_CLIENT') private readonly client: ClientProxy,
-    private readonly repo: SubmissionRepository,
-  ) {}
+  private readonly config = envConfig();
+  private readonly clients = new Map<string, ClientProxy>();
+
+  constructor(private readonly repo: SubmissionRepository) {}
+
+  private getQueueForLanguage(language: SupportedLanguage): string {
+    if (language === 'javascript' || language === 'typescript') {
+      return 'submission.javascript';
+    }
+
+    return `submission.${language}`;
+  }
+
+  private getClient(queue: string): ClientProxy {
+    const existing = this.clients.get(queue);
+    if (existing) return existing;
+
+    const client = ClientProxyFactory.create({
+      transport: Transport.RMQ,
+      options: {
+        urls: [this.config.RMQ_URL],
+        queue,
+        queueOptions: { durable: true },
+      },
+    });
+
+    client
+      .connect()
+      .then(() => console.log(`[LOG]: RMQ client connected (${queue})`))
+      .catch((err) =>
+        console.error(`[LOG]: RMQ client connect error (${queue})`, err),
+      );
+
+    this.clients.set(queue, client);
+    return client;
+  }
 
   async create(
     language: SupportedLanguage,
@@ -29,7 +63,11 @@ export class SubmissionService {
       input,
     };
 
-    this.client.emit(`submission.${language}`, event);
+    const queue = this.getQueueForLanguage(language);
+    const client = this.getClient(queue);
+    client.emit(queue, event);
+
+    console.log('[LOG]: submission message is emitted');
 
     return { submissionId };
   }

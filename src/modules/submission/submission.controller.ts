@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { SubmissionService } from './submission.service';
-import { SupportedLanguage } from '@app/libs/contracts/indext';
+import { SupportedLanguage } from '@app/libs/contracts';
 
 @Controller('submissions')
 export class SubmissionController {
