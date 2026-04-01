@@ -76,3 +76,44 @@ enum SubmissionStatus {
   RUNTIME_ERROR
   TIME_LIMIT
 }
+
+// Dashboard
+enum AdminRole {
+  SUPER_ADMIN // Full access
+  ADMIN // Manage tasks && users
+  EDITOR // Only Tasks
+  VIEWER // Only view analytics
+}
+
+model AdminUser {
+  id        String    @id @default(uuid())
+  login     String    @unique
+  password  String
+  name      String
+  role      AdminRole @default(EDITOR)
+  isActive  Boolean   @default(true) @map("is_active")
+  lastLogin DateTime? @map("last_login")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  AuditAdminLog AuditAdminLog[]
+
+  @@map("admin_user")
+}
+
+model AuditAdminLog {
+  id         String   @id @default(uuid())
+  adminId    String   @map("admin_id")
+  action     String // CREATE_PROBLEM, UPDATE_PROBLEM, DELETE_SUBMISSION
+  entityType String   @map("entity_type") // Problem, Submission, TestCase
+  entityId   String?  @map("entity_id")
+  oldValue   Json?    @map("old_value")
+  newValue   Json?    @map("new_value")
+  ipAdress   String?  @map("ip_adress")
+  userAgent  String?  @map("users_agent")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  admin AdminUser @relation(fields: [adminId], references: [id])
+
+  @@map("audit_admin_log")
+}
