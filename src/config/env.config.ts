@@ -1,4 +1,5 @@
 export interface EnvConfig {
+  SWAGGER_URL: string;
   SERVICE_GLOBAL_PREFIX: string;
   PORT: number;
   JWT_SECRET: string;
@@ -19,8 +20,9 @@ export interface EnvConfig {
 }
 
 export const envConfig = (): EnvConfig => ({
+  SWAGGER_URL: process.env.SWAGGER_URL!,
   SERVICE_GLOBAL_PREFIX: String(process.env.SERVICE_GLOBAL_PREFIX),
-  PORT: Number(process.env.PORT ?? 3000),
+  PORT: Number(process.env.PORT),
   JWT_SECRET: process.env.JWT_SECRET!,
   JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET!,
   DATABASE_URL: process.env.DATABASE_URL!,

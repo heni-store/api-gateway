@@ -11,6 +11,7 @@ import { SubmissionModule } from '@modules/submission/submission.module';
 import { ProblemsModule } from '@modules/problems/problems.module';
 import { DashboardModule } from '@modules/dashboard/dashboard.module';
 import { RedisModule } from '@modules/redis/redis.module';
+import { SwaggerModule } from '@app/swagger/swagger.module';
 
 @Module({
   imports: [
@@ -26,6 +27,8 @@ import { RedisModule } from '@modules/redis/redis.module';
     SubmissionModule,
     ProblemsModule,
     DashboardModule,
+
+    SwaggerModule,
 
     RouterModule.register([
       {
